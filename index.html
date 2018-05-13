@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+    <title>Visualisering av olika förslag på och effekter av medborgarlön</title>
+    <link rel="stylesheet" type="text/css" href="./css/style_index.css">
+</head>
+
+<body>
+
+    <h1>Visualisering av medborgarlönsförslag</h1>
+    <p>Slidern ställer in storlek på medborgarlönen (1 - 20 000 Sek).<span id="visaStorlek"></span></p>
+
+    <div class="slidecontainer">
+        <input type="range" min="1" max="20000" value="10000" class="slider" id="storlek">
+    </div>
+    <p>Slidern ställer in antal nettomottagare av medborgarlön (1 - 10 000 000).</p>
+
+    <div class="slidecontainer">
+        <input type="range" min="1" max="10000000" value="2000000" class="slider" id="nettomottagare">
+        <p><span id="resultat"></span></p>
+    </div>
+
+    <script src="./js/js_index.js"></script>
+
+</body>
+
+</html>
