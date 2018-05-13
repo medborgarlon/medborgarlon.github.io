@@ -5,7 +5,7 @@ var outputResultat = document.getElementById("resultat");
 
 
 sliderMedbLon.oninput = function () {
-    outputStorlek.innerHTML = " Vald storlek på medborgarlön: " + sliderMedbLon.value + " Sek/Mån";
+    outputStorlek.innerHTML = " Vald storlek på medborgarlön: <b>" + sliderMedbLon.value + "</b> Sek/Mån";
     var storlekMedborgarlon = sliderMedbLon.value;
     var totalKostnad = (storlekMedborgarlon * sliderNettoMottagare.value * 12 / 1000000000).toFixed(2);
     var nettoMottagare = (sliderNettoMottagare.value / 1000000).toFixed(2);
