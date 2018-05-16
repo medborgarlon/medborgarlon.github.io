@@ -1,20 +1,17 @@
-﻿var sliderMedbLon = document.getElementById("storlek");
-var sliderNettoMottagare = document.getElementById("nettomottagare");
-var outputStorlek = document.getElementById("visaStorlek");
-var outputResultat = document.getElementById("resultat");
-
-
-sliderMedbLon.oninput = function () {
-    outputStorlek.innerHTML = " Vald storlek på medborgarlön: <b>" + sliderMedbLon.value + "</b> Sek/Mån";
-    var storlekMedborgarlon = sliderMedbLon.value;
-    var totalKostnad = (storlekMedborgarlon * sliderNettoMottagare.value * 12 / 1000000000).toFixed(2);
-    var nettoMottagare = (sliderNettoMottagare.value / 1000000).toFixed(2);
-    outputResultat.innerHTML = "Enligt valt scenario ska ca <b>" + nettoMottagare + "</b> miljoner människor vara nettomottagare av en medborgarlön på <b>" + storlekMedborgarlon + "</b> Sek/mån.<br><br>" + "Totalkostnaden blir<b>: " + totalKostnad + "</b> Miljarder Sek/år" + "<br><br>" + "Detta utgör ca <b>" + (totalKostnad * 100 / 939.6).toFixed(2) + "%</b> av statens totala budget för 2018." + "<br><br>Om vi skrotar försörjningsstödet (ca <b>11</b> miljarder), arbetsförmedlingen (ca <b>64</b> miljarder), försäkringskassans utbetalningar av aktivitetsstöd (ca <b>14</b> miljarder), statens reella kostnader för studiemedlen (ca <b>17</b> miljarder) och de momsrabatter som idag existerar (ca <b>50</b> miljarder) så erhåller vi på finansieringssidan ca: <b>156</b> miljarder Sek.<br><br>Dessa <b>156</b> miljarder skulle finansiera <b>" + (100 * 156 / totalKostnad).toFixed(2) + "%</b> av reformen.";
-};
-
-sliderNettoMottagare.oninput = function () {
-    var storlekMedborgarlon = sliderMedbLon.value;
-    var totalKostnad = (storlekMedborgarlon * sliderNettoMottagare.value * 12 / 1000000000).toFixed(2);
-    var nettoMottagare = (sliderNettoMottagare.value / 1000000).toFixed(2);
-    outputResultat.innerHTML = "Enligt valt scenario ska ca <b>" + nettoMottagare + "</b> miljoner människor vara nettomottagare av en medborgarlön på <b>" + storlekMedborgarlon + "</b> Sek/mån.<br><br>" + "Totalkostnaden blir<b>: " + totalKostnad + "</b> Miljarder Sek/år" + "<br><br>" + "Detta utgör ca <b>" + (totalKostnad * 100 / 939.6).toFixed(2) + "%</b> av statens totala budget för 2018." + "<br><br>Om vi skrotar försörjningsstödet (ca <b>11</b> miljarder), arbetsförmedlingen (ca <b>64</b> miljarder),försäkringskassans utbetalningar av aktivitetsstöd (ca <b>14</b> miljarder), statens reella kostnader för studiemedlen (ca <b>17</b> miljarder) och de momsrabatter som idag existerar (ca <b>50</b> miljarder) så erhåller vi på finansieringssidan ca: <b>156</b> miljarder Sek.<br><br>Dessa <b>156</b> miljarder skulle finansiera <b>" + (100 * 156 / totalKostnad).toFixed(2) + "%</b> av reformen.";
-};
+        function onRangeChange(rangeInputElmt, listener) {
+            var inputEvtHasNeverFired = true;
+            var rangeValue = {                current: undefined,                mostRecent: undefined            };
+            rangeInputElmt.addEventListener("input", function(evt) {                inputEvtHasNeverFired = false;                rangeValue.current = evt.target.value;                if (rangeValue.current !== rangeValue.mostRecent) {                    listener(evt);                }                rangeValue.mostRecent = rangeValue.current;            });
+            rangeInputElmt.addEventListener("change", function(evt) {                if (inputEvtHasNeverFired) {                    listener(evt);                }            });
+        }
+        var eventSizeSlider = document.querySelector("#storlek");        var showSize = document.querySelector("#visaStorlek");        var eventRecipientsSlider = document.querySelector("#recipients");        var showRecipients = document.querySelector("#showRecipients");
+        var chosenSize = 10000;        var chosenRecipients = 1500000;
+        var mytotalCost = document.querySelector("#totalCost");        var mybudgetShare = document.querySelector("#budgetShare");        var myFinanceShare = document.querySelector("#financeShare");
+        var totalCost = 156; var financedCost = 156; var budgetShare = 16.6; var financeShare = 100;
+        var sizeUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*totalCost/financedCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML = "<b>" + financeShare + "</b> %";        };
+        var recipientsUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*totalCost/financedCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML =  "<b>" + financeShare + "</b> %";        };
+        ["input", "change"].forEach(function(myEvtType) {            eventSizeSlider.addEventListener(myEvtType, function() {                sizeUpdate();            });        });
+        ["input", "change"].forEach(function(myEvtType) {            eventRecipientsSlider.addEventListener(myEvtType, function() {                recipientsUpdate();            });        });
+        var sizeListener = function(myEvt) {            showSize.innerHTML = "Storlek på medborgarlön: <b>" + myEvt.target.value + "</b> Sek";            chosenSize = myEvt.target.value;            sizeUpdate();        };
+        var recipientsListener = function(myEvt) {            showRecipients.innerHTML = "Antal recipients: <b>" + (myEvt.target.value/1000000).toFixed(2) + "</b> miljoner";            chosenRecipients = myEvt.target.value;            recipientsUpdate();        };
+        onRangeChange(eventSizeSlider, sizeListener);        onRangeChange(eventRecipientsSlider, recipientsListener);
