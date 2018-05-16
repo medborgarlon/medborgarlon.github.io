@@ -1,9 +1,32 @@
-<!DOCTYPE html><html lang="sv">
-<head>    <meta http-equiv="content-type" content="text/html" charset="utf-8" />    <title>Visualisering av olika förslag på och effekter av medborgarlön</title>    <link rel="stylesheet" type="text/css" href="./css/style_index.css"></head>
+<!DOCTYPE html><html>
+<head>    <style>        table {            border-collapse: collapse;     margin: 10px;        }
+        th,        td {            text-align: left;            border: solid black 1px;            padding: 5px 15px;        } div.slideContainer {     display: inline-block;     border: solid black 2px;     margin: 10px;     padding: 10px;     width: 45%; } .slidecontainer {    width: 100%; }
+ .slider {    -webkit-appearance: none;    width: 100%;    height: 25px;    background: #aaaaaa;    outline: none;    opacity: 0.7;    -webkit-transition: .2s;    transition: opacity .2s;}
+.slider:hover {    opacity: 1;}
+.slider::-webkit-slider-thumb {    -webkit-appearance: none;    appearance: none;    width: 25px;    height: 25px;    background: #000000;    cursor: pointer;}
+.slider::-moz-range-thumb {    width: 25px;    height: 25px;    background: #4CAF50;    cursor: pointer;}
+    </style></head>
 <body>
-<h1>Visualisering av medborgarlönsförslag</h1>
+    <h1>Visualisering av medborgarlönsförslag</h1>
 <div id="choose">    <div class="slideContainer">    <p><span id="visaStorlek">Storlek på medborgarlön: <b>10000</b> Sek</span></p>        <input type="range" min="1" max="20000" value="10000" class="slider" id="storlek">    </div>
     <div class="slideContainer">    <p><span id="showRecipients">Antal recipients: <b>1,30</b> miljoner</span></p>        <input type="range" min="1" max="10000000" value="1500000" class="slider" id="recipients">    </div></div>    <table>        <tr>            <th>Uträkning</th>            <th style="width:150px">Resultat</th>            <tr>                <tr>                    <td>Totalkostnad medborgarlön Sek</td>                    <td id="totalCost"><b>156.00</b> miljarder Sek</td>                </tr>                <tr>                    <td>Andel av statsbudgeten (%)</td>                    <td id="budgetShare"><b>16.60</b> %</td>                </tr>                <tr>                    <td>Andel finansierad av valda källor (%)</td>                    <td id="financeShare"><b>100.00</b> %</td>                </tr>    </table>
-    <script src="./js/js_index.js"></script>
-</body>
+    <script type="text/javascript">
+        function onRangeChange(rangeInputElmt, listener) {
+            var inputEvtHasNeverFired = true;
+            var rangeValue = {                current: undefined,                mostRecent: undefined            };
+            rangeInputElmt.addEventListener("input", function(evt) {                inputEvtHasNeverFired = false;                rangeValue.current = evt.target.value;                if (rangeValue.current !== rangeValue.mostRecent) {                    listener(evt);                }                rangeValue.mostRecent = rangeValue.current;            });
+            rangeInputElmt.addEventListener("change", function(evt) {                if (inputEvtHasNeverFired) {                    listener(evt);                }            });
+        }
+        var eventSizeSlider = document.querySelector("#storlek");        var showSize = document.querySelector("#visaStorlek");        var eventRecipientsSlider = document.querySelector("#recipients");        var showRecipients = document.querySelector("#showRecipients");
+        var chosenSize = 10000;        var chosenRecipients = 1500000;
+        var mytotalCost = document.querySelector("#totalCost");        var mybudgetShare = document.querySelector("#budgetShare");        var myFinanceShare = document.querySelector("#financeShare");
+        var totalCost = 156; var financedCost = 156; var budgetShare = 16.6; var financeShare = 100;
+        var sizeUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*totalCost/financedCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML = "<b>" + financeShare + "</b> %";        };
+        var recipientsUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*totalCost/financedCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML =  "<b>" + financeShare + "</b> %";        };
+        ["input", "change"].forEach(function(myEvtType) {            eventSizeSlider.addEventListener(myEvtType, function() {                sizeUpdate();            });        });
+        ["input", "change"].forEach(function(myEvtType) {            eventRecipientsSlider.addEventListener(myEvtType, function() {                recipientsUpdate();            });        });
+        var sizeListener = function(myEvt) {            showSize.innerHTML = "Storlek på medborgarlön: <b>" + myEvt.target.value + "</b> Sek";            chosenSize = myEvt.target.value;            sizeUpdate();        };
+        var recipientsListener = function(myEvt) {            showRecipients.innerHTML = "Antal recipients: <b>" + (myEvt.target.value/1000000).toFixed(2) + "</b> miljoner";            chosenRecipients = myEvt.target.value;            recipientsUpdate();        };
+        onRangeChange(eventSizeSlider, sizeListener);        onRangeChange(eventRecipientsSlider, recipientsListener);
+    </script></body>
 </html>
