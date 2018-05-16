@@ -8,8 +8,11 @@
     </style></head>
 <body>
     <h1>Visualisering av medborgarlönsförslag</h1>
-<div id="choose">    <div class="slideContainer">    <p><span id="visaStorlek">Storlek på medborgarlön: <b>10000</b> Sek</span></p>        <input type="range" min="1" max="20000" value="10000" class="slider" id="storlek">    </div>
-    <div class="slideContainer">    <p><span id="showRecipients">Antal recipients: <b>1,30</b> miljoner</span></p>        <input type="range" min="1" max="10000000" value="1500000" class="slider" id="recipients">    </div></div>    <table>        <tr>            <th>Uträkning</th>            <th style="width:150px">Resultat</th>            <tr>                <tr>                    <td>Totalkostnad medborgarlön Sek</td>                    <td id="totalCost"><b>156.00</b> miljarder Sek</td>                </tr>                <tr>                    <td>Andel av statsbudgeten (%)</td>                    <td id="budgetShare"><b>16.60</b> %</td>                </tr>                <tr>                    <td>Andel finansierad av valda källor (%)</td>                    <td id="financeShare"><b>100.00</b> %</td>                </tr>    </table>
+<div id="choose">    <div class="slideContainer">    <p><span id="visaStorlek">Storlek på medborgarlön: <b>10000</b> Sek</span></p>        <input type="range" min="1" max="20000" value="10000" class="slider" 
+id="storlek">    </div>
+    <div class="slideContainer">    <p><span id="showRecipients">Antal nettomottagare av medborgarlön: <b>1,30</b> 
+miljoner</span></p>        <input type="range" min="1" max="10000000" value="1500000" class="slider" 
+id="recipients">    </div></div>    <table>        <tr>            <th>Uträkning</th>            <th style="width:150px">Resultat</th>            <tr>                <tr>                    <td>Totalkostnad medborgarlön Sek</td>                    <td id="totalCost"><b>156.00</b> miljarder Sek</td>                </tr>                <tr>                    <td>Andel av 2017 års statsbudget (%)</td>                    <td id="budgetShare"><b>16.60</b> %</td>                </tr>                <tr>                    <td>Andel finansierad av valda källor (%)</td>                    <td id="financeShare"><b>100.00</b> %</td>                </tr>    </table>
     <script type="text/javascript">
         function onRangeChange(rangeInputElmt, listener) {
             var inputEvtHasNeverFired = true;
@@ -18,15 +21,17 @@
             rangeInputElmt.addEventListener("change", function(evt) {                if (inputEvtHasNeverFired) {                    listener(evt);                }            });
         }
         var eventSizeSlider = document.querySelector("#storlek");        var showSize = document.querySelector("#visaStorlek");        var eventRecipientsSlider = document.querySelector("#recipients");        var showRecipients = document.querySelector("#showRecipients");
-        var chosenSize = 10000;        var chosenRecipients = 1500000;
+        var chosenSize = 10000;        var chosenRecipients = 1300000;
         var mytotalCost = document.querySelector("#totalCost");        var mybudgetShare = document.querySelector("#budgetShare");        var myFinanceShare = document.querySelector("#financeShare");
         var totalCost = 156; var financedCost = 156; var budgetShare = 16.6; var financeShare = 100;
-        var sizeUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*totalCost/financedCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML = "<b>" + financeShare + "</b> %";        };
-        var recipientsUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*totalCost/financedCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML =  "<b>" + financeShare + "</b> %";        };
+        var sizeUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*financedCost/totalCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML = "<b>" + financeShare + "</b> %";        };
+        var recipientsUpdate = function() {            totalCost = (chosenSize * chosenRecipients * 12 / 1000000000).toFixed(2);     budgetShare = (100*totalCost/939.6).toFixed(2);     financeShare = (100*financedCost/totalCost).toFixed(2);            mytotalCost.innerHTML = "<b>" + totalCost + "</b> miljarder Sek";            mybudgetShare.innerHTML = "<b>" + budgetShare + "</b> %";            myFinanceShare.innerHTML =  "<b>" + financeShare + "</b> %";        };
         ["input", "change"].forEach(function(myEvtType) {            eventSizeSlider.addEventListener(myEvtType, function() {                sizeUpdate();            });        });
         ["input", "change"].forEach(function(myEvtType) {            eventRecipientsSlider.addEventListener(myEvtType, function() {                recipientsUpdate();            });        });
-        var sizeListener = function(myEvt) {            showSize.innerHTML = "Storlek på medborgarlön: <b>" + myEvt.target.value + "</b> Sek";            chosenSize = myEvt.target.value;            sizeUpdate();        };
-        var recipientsListener = function(myEvt) {            showRecipients.innerHTML = "Antal recipients: <b>" + (myEvt.target.value/1000000).toFixed(2) + "</b> miljoner";            chosenRecipients = myEvt.target.value;            recipientsUpdate();        };
+        var sizeListener = function(myEvt) {            showSize.innerHTML = "Storlek på medborgarlön: <b>" + myEvt.target.value + 
+"</b> Sek";            chosenSize = myEvt.target.value;            sizeUpdate();        };
+        var recipientsListener = function(myEvt) {            showRecipients.innerHTML = "Antal nettomottagare av medborgarlön: <b>" + 
+(myEvt.target.value/1000000).toFixed(2) + "</b> miljoner";            chosenRecipients = myEvt.target.value;            recipientsUpdate();        };
         onRangeChange(eventSizeSlider, sizeListener);        onRangeChange(eventRecipientsSlider, recipientsListener);
     </script></body>
 </html>
